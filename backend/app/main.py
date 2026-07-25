@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
+
 from app.api.health import router as health_router
-from app.core.config import settings
 
 app = FastAPI()
 

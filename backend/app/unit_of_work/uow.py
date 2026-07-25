@@ -1,10 +1,14 @@
-from app.core.database import SessionFactory
+from app.core.database import Database
 from app.repositories.file_repository import FileRepository
 
 
 class UnitOfWork:
+
+    def __init__(self, database: Database):
+        self._database = database
+
     async def __aenter__(self):
-        self.session = SessionFactory()
+        self.session = self._database.session()
 
         self.files = FileRepository(self.session)
 

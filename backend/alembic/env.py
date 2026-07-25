@@ -2,16 +2,14 @@ from __future__ import annotations
 
 from logging.config import fileConfig
 
+# Импортируем модели, чтобы Alembic видел metadata
+import app.models  # noqa: F401
 from alembic import context
+from app.core.config import settings
+from app.models.base import Base
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-
-from app.core.config import settings
-from app.models.base import Base
-
-# Импортируем модели, чтобы Alembic видел metadata
-import app.models  # noqa: F401
 
 config = context.config
 

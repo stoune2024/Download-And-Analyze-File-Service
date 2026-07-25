@@ -1,7 +1,7 @@
-from app.unit_of_work.uow import UnitOfWork
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+
 from app.dependencies.uow import get_uow
-from fastapi import Depends
+from app.unit_of_work.uow import UnitOfWork
 
 router = APIRouter(tags=["Health"])
 

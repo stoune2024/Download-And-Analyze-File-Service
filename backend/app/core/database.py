@@ -13,7 +13,7 @@ class Database:
     def __init__(self, settings: Settings):
         self.engine: AsyncEngine = create_async_engine(
             settings.database_url,
-            echo=settings.sql_echo,
+            echo=True,
             future=True,
         )
 

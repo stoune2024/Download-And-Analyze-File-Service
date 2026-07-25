@@ -3,25 +3,41 @@ from app.repositories.file_repository import FileRepository
 
 
 class UnitOfWork:
-
     def __init__(self, database: Database):
         self._database = database
 
-    async def __aenter__(self):
-        self.session = self._database.session()
+        self._session = None
 
-        self.files = FileRepository(self.session)
+        self._files = None
+
+    @property
+    def files(self) -> FileRepository:
+
+        if self._files is None:
+            self._files = FileRepository(self._session)
+
+        return self._files
+
+    @property
+    def statistics(self): ...
+
+    @property
+    def downloads(self): ...
+
+    @property
+    def cache(self): ...
+
+    async def __aenter__(self):
+
+        self._session = self._database.get_session()
 
         return self
 
     async def __aexit__(self, exc_type, exc, tb):
-        if exc:
-            await self.session.rollback()
 
-        await self.session.close()
+        if exc_type:
+            await self._session.rollback()
+        else:
+            await self._session.commit()
 
-    async def commit(self):
-        await self.session.commit()
-
-    async def rollback(self):
-        await self.session.rollback()
+        await self._session.close()

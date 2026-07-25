@@ -13,16 +13,17 @@ class File(Base):
 
     name: Mapped[str] = mapped_column(
         String(255),
-        unique=True,
         nullable=False,
+        unique=True,
+        index=True,
     )
 
     path: Mapped[str] = mapped_column(
-        String(512),
+        String(500),
         nullable=False,
     )
 
     downloaded_at: Mapped[datetime] = mapped_column(
-        DateTime,
+        DateTime(timezone=True),
         nullable=False,
     )

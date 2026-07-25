@@ -4,9 +4,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    app_host: str
-    app_port: int
+    external_api_url: str
+
     candidate_id: str | None = None
+
+    request_timeout: int = 30
+    max_retries: int = 5
 
     database_url: str
 

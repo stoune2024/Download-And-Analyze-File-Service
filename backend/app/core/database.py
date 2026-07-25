@@ -1,10 +1,11 @@
-from app.core.config import Settings
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
+
+from app.core.config import Settings
 
 
 class Database:

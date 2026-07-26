@@ -13,7 +13,7 @@ class ExternalApiBlockedException(ExternalApiException):
     ):
         self.retry_after = retry_after
 
-        super().__init__("External API client blocked")
+        super().__init__(f"External API blocked. Retry after {retry_after}s")
 
 
 class ExternalApiRateLimitException(ExternalApiException):

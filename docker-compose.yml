@@ -45,11 +45,15 @@ services:
       - ./backend:/app
       - ./backend/storage:/app/storage
 
-    command: >
-      uvicorn app.main:app
-      --host 0.0.0.0
-      --port 8000
-      --reload
+    command:
+      - sh
+      - -c
+      - |
+        pwd
+        ls -la
+        alembic current
+        alembic upgrade head
+        exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
   frontend:
     build:
@@ -70,6 +74,15 @@ services:
       - /app/node_modules
 
     command: npm run dev -- --host
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   postgres_data:

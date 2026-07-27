@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from typing import Literal
 from zoneinfo import ZoneInfo
 
@@ -22,12 +23,31 @@ class DownloadResult(BaseModel):
     retry_after: int | None = None
 
 
-from enum import Enum
-
-
 class DownloadStatus(str, Enum):
     IDLE = "idle"
     RUNNING = "running"
     COMPLETED = "completed"
     BLOCKED = "blocked"
     FAILED = "failed"
+
+
+class DownloadEventType(str, Enum):
+    STARTED = "started"
+
+    RECEIVED_NAMES = "received_names"
+
+    DOWNLOADED = "downloaded"
+
+    FINISHED = "finished"
+
+    BLOCKED = "blocked"
+
+    FAILED = "failed"
+
+
+class DownloadEvent(BaseModel):
+    type: DownloadEventType
+
+    progress: DownloadProgress
+
+    message: str | None = None

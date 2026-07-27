@@ -3,6 +3,7 @@ import logging
 from collections.abc import Callable
 
 from app.schemas.download import (
+    DownloadEvent,
     DownloadProgress,
     DownloadResult,
     DownloadStatus,
@@ -26,6 +27,8 @@ class DownloadManager:
         self._progress = DownloadProgress()
 
         self._result: DownloadResult | None = None
+
+        self._events: asyncio.Queue[DownloadEvent] = asyncio.Queue()
 
     @property
     def status(self) -> DownloadStatus:
@@ -57,7 +60,7 @@ class DownloadManager:
 
     async def _run(self):
 
-        service = self._service_factory()
+        service = self._service_factory(publisher=self.publish)
 
         service.progress = self._progress
 
@@ -77,3 +80,19 @@ class DownloadManager:
             self._status = DownloadStatus.FAILED
 
             raise
+
+    async def publish(
+        self,
+        event: DownloadEvent,
+    ):
+
+        self._progress = event.progress
+
+        await self._events.put(event)
+
+    async def events(self):
+
+        while True:
+            event = await self._events.get()
+
+            yield event

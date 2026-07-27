@@ -7,12 +7,24 @@ from app.integrations.external_api.client import (
     ExternalApiClient,
 )
 from app.models.file import File
-from app.schemas.download import DownloadProgress, DownloadResult
+from app.schemas.download import (
+    DownloadEvent,
+    DownloadEventType,
+    DownloadProgress,
+    DownloadResult,
+)
 from app.storages.archive import ZipExtractor
 from app.storages.file_storage import FileStorage
 from app.unit_of_work.uow import UnitOfWork
 
 logger = get_logger(__name__)
+
+from collections.abc import Awaitable, Callable
+
+EventPublisher = Callable[
+    [DownloadEvent],
+    Awaitable[None],
+]
 
 
 class DownloadService:
@@ -22,6 +34,7 @@ class DownloadService:
         storage: FileStorage,
         extractor: ZipExtractor,
         uow: UnitOfWork,
+        publisher: EventPublisher,
     ):
 
         self.client = client
@@ -33,6 +46,8 @@ class DownloadService:
         self.uow = uow
 
         self.progress: DownloadProgress | None = None
+
+        self._publish = publisher
 
     async def download_all(self) -> DownloadResult:
 
@@ -57,6 +72,13 @@ class DownloadService:
                     self.progress.total_downloaded,
                 )
 
+                await self._publish(
+                    DownloadEvent(
+                        type=DownloadEventType.STARTED,
+                        progress=self.progress.model_copy(),
+                    )
+                )
+
                 for chunk in self._chunks(names, 3):
                     archive = await self.client.download(chunk)
 
@@ -76,11 +98,25 @@ class DownloadService:
                         self.progress.total_downloaded,
                     )
 
+                    await self._publish(
+                        DownloadEvent(
+                            type=DownloadEventType.DOWNLOADED,
+                            progress=self.progress.model_copy(),
+                        )
+                    )
+
             logger.info(
                 "Progress: received=%d, current_batch=%d, downloaded=%d",
                 self.progress.received_names,
                 self.progress.current_batch_size,
                 self.progress.total_downloaded,
+            )
+
+            await self._publish(
+                DownloadEvent(
+                    type=DownloadEventType.DOWNLOADED,
+                    progress=self.progress.model_copy(),
+                )
             )
 
             return DownloadResult(

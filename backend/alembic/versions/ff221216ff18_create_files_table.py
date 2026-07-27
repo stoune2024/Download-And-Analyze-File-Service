@@ -31,6 +31,26 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("name"),
     )
+
+    op.create_table(
+        "file_statistics",
+        sa.Column(
+            "file_id",
+            sa.Integer(),
+            nullable=False,
+        ),
+        sa.Column(
+            "counts",
+            sa.JSON(),
+            nullable=False,
+        ),
+        sa.ForeignKeyConstraint(
+            ["file_id"],
+            ["files.id"],
+            ondelete="CASCADE",
+        ),
+        sa.PrimaryKeyConstraint("file_id"),
+    )
     # ### end Alembic commands ###
 
 

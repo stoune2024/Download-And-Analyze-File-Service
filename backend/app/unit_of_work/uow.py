@@ -1,6 +1,7 @@
 from app.core.database import Database
 from app.core.logging import get_logger
 from app.repositories.file_repository import FileRepository
+from app.repositories.file_statistics_repository import FileStatisticsRepository
 
 logger = get_logger(__name__)
 
@@ -12,6 +13,8 @@ class UnitOfWork:
         self._session = None
 
         self._files = None
+
+        self._file_statistics = None
 
     async def __aenter__(self):
 
@@ -37,3 +40,11 @@ class UnitOfWork:
     @property
     def files(self):
         return self._files
+
+    @property
+    def file_statistics(self) -> FileStatisticsRepository:
+
+        if self._file_statistics is None:
+            self._file_statistics = FileStatisticsRepository(self._session)
+
+        return self._file_statistics

@@ -585,36 +585,6 @@ app/integrations/external_api
 
 Сервисы приложения не знают о сетевых ошибках.
 
-
----
-
-# Скриншоты
-
-
-Добавить изображения:
-
-
-```
-docs/screenshots/
-
-
-├── download.png
-├── files.png
-├── statistics.png
-└── swagger.png
-```
-
-
-Пример:
-
-
-```
-## Интерфейс загрузки
-
-![Download](docs/screenshots/download.png)
-```
-
-
 ---
 
 # Возможные улучшения

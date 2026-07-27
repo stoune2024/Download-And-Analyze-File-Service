@@ -2,6 +2,10 @@ import {
     useState
 } from "react";
 
+import {
+    useNavigate
+} from "react-router-dom";
+
 
 import {
     useFiles
@@ -19,199 +23,285 @@ import {
 
 
 
-export default function FilesPage(){
+export default function FilesPage() {
 
 
-const size = 20;
+    const navigate = useNavigate();
 
 
-const [page,setPage] = useState(1);
+    const size = 20;
 
 
-const {
-
-files,
-
-total,
-
-loading,
-
-}=useFiles(
-
-page,
-
-size
-
-);
+    const [page, setPage] = useState(1);
 
 
 
-const [
-
-selected,
-
-setSelected
-
-]=useState<number[]>([]);
-
-
-
-function toggle(id:number){
-
-
-setSelected(prev=>
-
-
-prev.includes(id)
-
-?
-
-prev.filter(
-    x=>x!==id
-)
-
-:
-
-[
-    ...prev,
-    id
-]
-
-
-);
-
-
-}
-
-
-
-function togglePage(){
-
-
-const ids = files.map(
-    x=>x.id
-);
-
-
-
-const all = ids.every(
-    x=>selected.includes(x)
-);
-
-
-
-if(all){
-
-    setSelected(
-        selected.filter(
-            x=>!ids.includes(x)
-        )
+    const {
+        files,
+        total,
+        loading,
+    } = useFiles(
+        page,
+        size,
     );
 
-}
-
-else{
 
 
-    setSelected(
+    const [
+        selected,
+        setSelected
+    ] = useState<number[]>([]);
 
-        [
 
-        ...new Set(
-            [
-                ...selected,
-                ...ids
+
+
+    /**
+     * Выбор одного файла
+     */
+    function toggleFile(
+        id: number
+    ) {
+
+
+        setSelected(
+            previous => {
+
+
+                if (
+                    previous.includes(id)
+                ) {
+
+                    return previous.filter(
+                        item => item !== id
+                    );
+
+                }
+
+
+                return [
+                    ...previous,
+                    id
+                ];
+
+            }
+        );
+
+    }
+
+
+
+
+    /**
+     * Выбор всех файлов на текущей странице
+     */
+    function togglePage() {
+
+
+        const pageIds = files.map(
+            file => file.id
+        );
+
+
+        const allSelected = pageIds.every(
+            id => selected.includes(id)
+        );
+
+
+
+        if (allSelected) {
+
+
+            setSelected(
+                previous =>
+                    previous.filter(
+                        id =>
+                            !pageIds.includes(id)
+                    )
+            );
+
+
+            return;
+
+        }
+
+
+
+        setSelected(
+
+            previous => [
+
+                ...new Set(
+
+                    [
+
+                        ...previous,
+
+                        ...pageIds
+
+                    ]
+
+                )
+
             ]
-        )
 
-        ]
+        );
+
+    }
+
+
+
+
+
+    /**
+     * Переход на страницу статистики
+     */
+    function calculateStatistics() {
+
+
+        navigate(
+
+            "/statistics",
+
+            {
+
+                state: {
+
+                    fileIds: selected
+
+                }
+
+            }
+
+        );
+
+    }
+
+
+
+
+    const allPageSelected =
+
+        files.length > 0 &&
+
+        files.every(
+
+            file =>
+                selected.includes(file.id)
+
+        );
+
+
+
+
+    return (
+
+        <div>
+
+
+            <h1>
+                Скачанные файлы
+            </h1>
+
+
+
+            {
+                loading &&
+
+                <p>
+                    Загрузка...
+                </p>
+            }
+
+
+
+
+            <FilesTable
+
+
+                files={files}
+
+
+                selected={selected}
+
+
+                toggle={toggleFile}
+
+
+                togglePage={togglePage}
+
+
+                allSelected={allPageSelected}
+
+
+            />
+
+
+
+
+
+            <Pagination
+
+
+                page={page}
+
+
+                size={size}
+
+
+                total={total}
+
+
+                change={setPage}
+
+
+            />
+
+
+
+
+
+            <div>
+
+
+                <p>
+
+                    Выбрано файлов:
+
+                    {" "}
+
+                    {selected.length}
+
+                </p>
+
+
+
+                <button
+
+
+                    disabled={
+                        selected.length === 0
+                    }
+
+
+                    onClick={
+                        calculateStatistics
+                    }
+
+
+                >
+
+                    Произвести расчёты
+
+
+                </button>
+
+
+            </div>
+
+
+
+        </div>
 
     );
-
-}
-
-
-}
-
-
-
-return (
-
-<div>
-
-
-<h1>
-Files
-</h1>
-
-
-{
-loading &&
-<p>
-Loading...
-</p>
-}
-
-
-<FilesTable
-
-
-files={files}
-
-
-selected={selected}
-
-
-toggle={toggle}
-
-
-togglePage={togglePage}
-
-
-allSelected={
-
-files.length>0 &&
-
-files.every(
-x=>selected.includes(x.id)
-)
-
-}
-
-
-/>
-
-
-<Pagination
-
-
-page={page}
-
-
-size={size}
-
-
-total={total}
-
-
-change={setPage}
-
-
-/>
-
-
-<p>
-
-Выбрано:
-
-{selected.length}
-
-</p>
-
-
-</div>
-
-);
-
 
 }

@@ -10,7 +10,7 @@ import {
 
 import DownloadPage from "../pages/DownloadPage";
 import FilesPage from "../pages/FilesPage";
-
+import StatisticsPage from "../pages/StatisticsPage";
 export function Router() {
 
     return (
@@ -31,6 +31,13 @@ export function Router() {
                 path="/files"
 
                 element={<FilesPage/>}
+
+                />
+                <Route
+
+                path="/statistics"
+
+                element={<StatisticsPage/>}
 
                 />
 

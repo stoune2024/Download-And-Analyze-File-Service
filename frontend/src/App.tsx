@@ -1,33 +1,74 @@
-import { useEffect, useState } from "react";
-import { getHealth } from "./api/health";
+import {
+    BrowserRouter,
+    Routes,
+    Route,
+    Link,
+} from "react-router-dom";
+
+
+import DownloadPage from "./pages/DownloadPage";
+import FilesPage from "./pages/FilesPage";
+import StatisticsPage from "./pages/StatisticsPage";
+
 
 function App() {
-    const [status, setStatus] = useState("Loading...");
-
-    useEffect(() => {
-        getHealth()
-            .then((data) => {
-                setStatus(data.status);
-            })
-            .catch(() => {
-                setStatus("Backend unavailable");
-            });
-    }, []);
 
     return (
-        <main
-            style={{
-                padding: 40,
-                fontFamily: "sans-serif",
-            }}
-        >
-            <h1>File Downloader</h1>
 
-            <h2>Backend status:</h2>
+        <BrowserRouter>
 
-            <p>{status}</p>
-        </main>
+            <nav>
+
+                <Link to="/">
+                    Download
+                </Link>
+
+                {" | "}
+
+                <Link to="/files">
+                    Files
+                </Link>
+
+                {" | "}
+
+                <Link to="/statistics">
+                    Statistics
+                </Link>
+
+            </nav>
+
+
+            <Routes>
+
+                <Route
+                    path="/"
+                    element={
+                        <DownloadPage />
+                    }
+                />
+
+
+                <Route
+                    path="/files"
+                    element={
+                        <FilesPage />
+                    }
+                />
+
+
+                <Route
+                    path="/statistics"
+                    element={
+                        <StatisticsPage />
+                    }
+                />
+
+            </Routes>
+
+        </BrowserRouter>
+
     );
 }
+
 
 export default App;

@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 
 import DownloadPage from "../pages/DownloadPage";
+import FilesPage from "../pages/FilesPage";
 
 export function Router() {
 
@@ -23,6 +24,13 @@ export function Router() {
                     path="/"
 
                     element={<DownloadPage />}
+
+                />
+                <Route
+
+                path="/files"
+
+                element={<FilesPage/>}
 
                 />
 

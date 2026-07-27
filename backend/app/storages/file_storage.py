@@ -18,9 +18,14 @@ class FileStorage:
         filename: str,
         content: bytes,
     ) -> str:
-
         file_path = self.base_path / filename
 
         file_path.write_bytes(content)
 
         return str(file_path)
+
+    async def read(
+        self,
+        path: str,
+    ) -> str:
+        return Path(path).read_text()

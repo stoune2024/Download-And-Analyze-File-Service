@@ -1,0 +1,18 @@
+from fastapi import Depends
+
+from app.cache.statistics_cache import get_statistics_cache
+from app.dependencies.uow import get_uow
+from app.factories.download_service_factory import get_storage
+from app.services.statiscics_service import StatisticsService
+from app.unit_of_work.uow import UnitOfWork
+
+
+def get_statistics_service(
+    uow: UnitOfWork = Depends(get_uow),
+):
+
+    return StatisticsService(
+        storage=get_storage(),
+        cache=get_statistics_cache(),
+        uow=uow,
+    )

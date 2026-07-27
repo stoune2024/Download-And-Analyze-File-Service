@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from app.models.file import File
 from app.repositories.base import BaseRepository
@@ -28,3 +28,24 @@ class FileRepository(BaseRepository):
         result = await self._session.execute(stmt)
 
         return list(result.scalars())
+
+    async def paginate(
+        self,
+        page: int,
+        size: int,
+    ) -> tuple[list[File], int]:
+        total = await self._session.scalar(select(func.count()).select_from(File))
+
+        stmt = (
+            select(File)
+            .order_by(File.downloaded_at.desc())
+            .offset((page - 1) * size)
+            .limit(size)
+        )
+
+        result = await self._session.execute(stmt)
+
+        return (
+            list(result.scalars()),
+            total or 0,
+        )

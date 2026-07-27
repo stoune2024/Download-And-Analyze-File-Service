@@ -4,6 +4,7 @@ from collections.abc import Awaitable, Callable
 from typing import TypeVar
 
 import httpx
+
 from app.core.logging import get_logger
 from app.integrations.external_api.exceptions import (
     ExternalApiBlockedException,

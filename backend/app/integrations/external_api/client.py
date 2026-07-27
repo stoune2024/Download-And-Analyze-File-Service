@@ -1,4 +1,5 @@
 import httpx
+
 from app.integrations.external_api.exceptions import (
     ExternalApiBlockedException,
     ExternalApiRateLimitException,

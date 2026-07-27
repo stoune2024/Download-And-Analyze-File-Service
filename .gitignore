@@ -9,7 +9,7 @@ __pycache__/
 
 node_modules/
 
-storage/
+#storage/
 
 dist/
 

@@ -1,31 +1,34 @@
 import { useEffect } from "react";
 
-import { createDownloadEvents } from "../api/sse";
+import { DownloadEvents } from "../services/downloadEvents";
 
 export function useDownloadEvents(
-    setProgress: (progress: DownloadProgress) => void,
+
+    enabled: boolean,
+
+    onProgress: (progress: any) => void,
+
+    onFinish: () => void,
+
 ) {
 
     useEffect(() => {
 
-        const events = createDownloadEvents();
+        if (!enabled)
+            return;
 
-        events.addEventListener(
-            "downloaded",
-            (e) => {
+        const events = new DownloadEvents();
 
-                setProgress(
-                    JSON.parse(e.data)
-                );
+        events.connect(
 
-            },
+            onProgress,
+
+            onFinish,
+
         );
 
-        return () => {
+        return () => events.disconnect();
 
-            events.close();
+    }, [enabled]);
 
-        };
-
-    }, []);
 }

@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, Query
+from __future__ import annotations
 
+from fastapi import APIRouter, Depends, Query
 from app.dependencies.file import (
     get_file_service,
 )

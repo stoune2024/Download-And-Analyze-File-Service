@@ -33,3 +33,7 @@ class UnitOfWork:
             await self._session.commit()
 
         await self._session.close()
+
+    @property
+    def files(self):
+        return self._files

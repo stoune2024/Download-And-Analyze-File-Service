@@ -19,6 +19,6 @@ async def db_check(
     uow: UnitOfWork = Depends(get_uow),
 ):
     async with uow:
-        files = await uow._files.list()
+        files = await uow.files.list()
 
     return {"count": len(files)}

@@ -32,9 +32,7 @@ class DownloadService:
 
         self.uow = uow
 
-        self.progress = DownloadProgress(
-            started_at=datetime.now(ZoneInfo("Asia/Novosibirsk"))
-        )
+        self.progress: DownloadProgress | None = None
 
     async def download_all(self) -> DownloadResult:
 
@@ -44,6 +42,11 @@ class DownloadService:
 
                 if not names:
                     break
+
+                if self.progress is None:
+                    self.progress = DownloadProgress(
+                        started_at=datetime.now(ZoneInfo("Asia/Novosibirsk"))
+                    )
 
                 self.progress.received_names += len(names)
 

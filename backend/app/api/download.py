@@ -1,20 +1,27 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
-from app.dependencies.download import (
-    get_download_service,
-)
-from app.services.download_service import (
-    DownloadService,
-)
+from app.dependencies.download_manager import get_download_manager
+from app.managers.download_manager import DownloadManager
 
 router = APIRouter()
 
 
-@router.post("/download")
-async def download(
-    service: DownloadService = Depends(get_download_service),
+@router.post(
+    "/download",
+    status_code=202,
+)
+async def start_download(
+    manager: DownloadManager = Depends(get_download_manager),
 ):
 
-    count = await service.download_all()
+    if manager.is_running:
+        raise HTTPException(
+            status_code=409,
+            detail="Download already running.",
+        )
 
-    return {"downloaded": count}
+    manager.start()
+
+    return {
+        "status": "started",
+    }

@@ -1,4 +1,4 @@
-import {
+import type {
     FileStatistics
 } from "../../types/statistics";
 

@@ -9,10 +9,9 @@ import {
 } from "../api/filesApi";
 
 
-import {
-    FileItem
+import type {
+    FileItem,
 } from "../types/file";
-
 
 export function useFiles(
 

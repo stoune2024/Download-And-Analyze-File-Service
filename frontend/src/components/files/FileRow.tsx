@@ -1,7 +1,4 @@
-import {
-    FileItem
-} from "../../types/file";
-
+import type { FileItem } from "../../types/file";
 
 interface Props {
 

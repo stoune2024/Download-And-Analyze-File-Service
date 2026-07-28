@@ -1,9 +1,8 @@
 import { api } from "./axios";
 
-import {
+import type {
     StatisticsResponse
 } from "../types/statistics";
-
 
 
 export async function calculateStatistics(

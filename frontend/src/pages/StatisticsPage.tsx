@@ -14,7 +14,7 @@ import {
 } from "../api/statisticsApi";
 
 
-import {
+import type {
     StatisticsResponse
 } from "../types/statistics";
 

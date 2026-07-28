@@ -1,4 +1,4 @@
-import {
+import type {
     DigitStatistics
 } from "../../types/statistics";
 
